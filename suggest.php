@@ -7,7 +7,7 @@
  * 创建时间：2011-10-24 20:11:27
  */
 // 加载 XS 入口文件
-require_once '/home/bbsweb/html/search/lib/XS.php';
+require_once dirname(__FILE__) . '/lib/XS.php';
 
 // Prefix Query is: term (by jQuery-ui)
 $q = isset($_GET['term']) ? trim($_GET['term']) : '';
@@ -28,5 +28,11 @@ if (!empty($q) && strpos($q, ':') === false)
 
 // output json
 header("Content-Type: application/json; charset=utf-8");
-echo json_encode($terms);
+$size = count($terms);
+echo "[";
+for ($i = 0; $i < $size - 1; $i++) {
+    echo '"', $terms[$i], '",';
+}
+echo '"', $terms[$size - 1], '"';
+echo "]";
 exit(0);
