@@ -33,11 +33,9 @@ form#q-form { margin: 0; }
     border-style: solid; border-width: 1px;
     font: 16px arial; height: 22px;
     padding: 4px 7px; vertical-align: top;
-    background: url("http://su.bdimg.com/static/superpage/img/spis_167a8734.png") no-repeat scroll 0 0 transparent;
 }
 #q-input .button { 
 	float: left; font-size: 14px; margin-left: 10px;
-    background: url("http://su.bdimg.com/static/superpage/img/spis_167a8734.png") repeat scroll 0 -35px #DDDDDD;
     border: 0 none; cursor: pointer; height: 32px; padding: 0; width: 95px;	
 }
 #q-input .tips { color: #aaa; font-size: 12px; }
@@ -94,6 +92,7 @@ form#q-form { margin: 0; }
 		<h4>选项</h4>
 		<ul>
 			<li><input type="radio" name="f" value="title" <?php echo $f_title; ?> />Title</li>
+			<li><input type="radio" name="f" value="time" <?php echo $f_time; ?> />Time</li>
 			<li><input type="radio" name="f" value="author" <?php echo $f_author; ?> />Author</li>
 			<li><input type="radio" name="f" value="board" <?php echo $f_board; ?> />Board</li>
 			<li><input type="radio" name="f" value="_all" <?php echo $f__all; ?> />全文</li>
@@ -172,6 +171,7 @@ form#q-form { margin: 0; }
 			</h2>
 			<p><?php echo $search->highlight($doc->content); ?></p>
 			<ul>
+				<li><span>Time:</span> <?php echo $doc->time; ?></li>
 				<li><span>Author:</span> <?php echo $doc->author; ?></li>
 				<li><span>Board:</span> <?php echo $doc->board; ?></li>
 			</ul>
@@ -210,9 +210,9 @@ form#q-form { margin: 0; }
 </div><!-- outer -->
 
 <!-- load jquery from google -->
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/redmond/jquery-ui.css" type="text/css" media="all" />
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="/static/css/ui-lightness/jquery-ui-1.8.16.custom.css" type="text/css" media="all" />
+<script type="text/javascript" src="/static/js/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui-1.8.16.custom.min.js"></script>
 
 <!-- ready script -->
 <script language="javascript">

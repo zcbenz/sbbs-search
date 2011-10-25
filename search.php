@@ -1,14 +1,14 @@
 <?php
 /**
  * search.php 
- * Sbbs 搜索项目入口文件
+ * SBBS 搜索项目入口文件
  * 
  * 该文件由 xunsearch PHP-SDK 工具自动生成，请根据实际需求进行修改
- * 创建时间：2011-10-22 23:44:29
+ * 创建时间：2011-10-24 20:11:27
  * 默认编码：GBK
  */
 // 加载 XS 入口文件
-require_once dirname(__FILE__) . '/lib/XS.php';
+require_once '/home/bbsweb/html/search/lib/XS.php';
 error_reporting(E_ALL ^ E_NOTICE);
 
 //
@@ -70,7 +70,7 @@ $total_begin = microtime(true);
 // perform the search
 try
 {
-	$xs = new XS(dirname(__FILE__) . '/app/sbbs.ini');
+	$xs = new XS('sbbs');
 	$search = $xs->search;
 	$search->setCharset('GBK');
 
