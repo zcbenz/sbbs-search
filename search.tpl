@@ -36,6 +36,7 @@ form#q-form { margin: 0; }
 }
 #q-input .button { 
 	float: left; font-size: 14px; margin-left: 10px;
+    background: #DDD url(button.png) no-repeat;
     border: 0 none; cursor: pointer; height: 32px; padding: 0; width: 95px;	
 }
 #q-input .tips { color: #aaa; font-size: 12px; }
@@ -166,7 +167,7 @@ form#q-form { margin: 0; }
 		<?php foreach ($docs as $doc): ?>
 		<div class="res-doc">
 			<h2>
-				<a href="javascript:void(alert('id: <?php echo $doc->id; ?>'));"><?php echo $doc->rank(); ?>. <?php echo $search->highlight($doc->title); ?></a>
+				<a href="/bbscon.php?board=<?php echo $doc->board; ?>&id=<?php echo $doc->id; ?>"><?php echo $doc->rank(); ?>. <?php echo $search->highlight($doc->title); ?></a>
 				<small>[<?php echo $doc->percent(); ?>%]</small>
 			</h2>
 			<p><?php echo $search->highlight($doc->content); ?></p>
