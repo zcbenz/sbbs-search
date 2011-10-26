@@ -31,7 +31,7 @@ foreach ($boards as $key => &$val) {
     printf ('[%s] :           ', $board_name);
 
     $i = 1;
-    $PAGE = 10;
+    $PAGE = 100;
     while ($total > 0) {
         $quit = false;
 
