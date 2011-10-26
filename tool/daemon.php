@@ -6,6 +6,13 @@ require_once 'init.php';
 $session = new Session();
 $session->initLogin();
 
+if (bbs_daemon('bbsindexd', true, true)) {
+    echo 'Cannot start bbsindexd';
+    bbs_log('3error', 'bbsindexd already started');
+
+    exit(0);
+}
+
 while ($msg = bbs_logrcv()) {
     import_post($msg['board'], $msg['postid']);
 }
