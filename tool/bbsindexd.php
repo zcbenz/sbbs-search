@@ -18,9 +18,9 @@ if (bbs_daemon('bbsindexd', true, true)) {
 }
 
 while ($msg = bbs_logrcv()) {
-    if ($msg->mtype == BBSLOG_POST) {
+    if ($msg['mtype'] == BBSLOG_POST) {
         import_post($msg['board'], $msg['postid']);
-    } else if ($msg->mtype == BBSLOG_DELETE) {
+    } else if ($msg['mtype'] == BBSLOG_DELETE) {
         try {
             $xs = new XS('sbbs');
             $index = $xs->index;
@@ -28,7 +28,7 @@ while ($msg = bbs_logrcv()) {
         } catch(Exception $e) {
             bbs_log('3error', 'bbsindexd remove index failed: ' . $e->getMessage());
         }
-    } else if ($msg->mtype == BBSLOG_UPDATE) {
+    } else if ($msg['mtype'] == BBSLOG_UPDATE) {
         import_post($msg['mtext'], $msg['pid']);
     }
 }
@@ -40,8 +40,6 @@ function import_post($board_name, $id) {
         // Guard from memory overflow
         if (strlen($content) > 200000)
             continue;
-
-        ++$count;
 
         $data = array(
             'id' => $val['ID'],
@@ -74,7 +72,7 @@ function get_article($board_name, $id) {
     $articles = array();
     bbs_get_records_from_id($board_name, $id, 0, &$articles);
 
-    return $articles[0];
+    return $articles[1];
 }
 
 function startsWith($haystack, $needle, $case = true)
