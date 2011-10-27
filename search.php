@@ -1,17 +1,12 @@
 <?php
-/**
- * search.php 
- * SBBS 搜索项目入口文件
- * 
- * 该文件由 xunsearch PHP-SDK 工具自动生成，请根据实际需求进行修改
- * 创建时间：2011-10-24 20:11:27
- * 默认编码：GBK
- */
-// 加载 XS 入口文件
-require_once '/home/bbsweb/html/search/lib/XS.php';
-error_reporting(E_ALL ^ E_NOTICE);
+require_once 'search/lib/XS.php';
+require_once 'init.php';
 
-//
+$session = new Session();
+$session->initLogin();
+
+Lib::load(array('utils/pagination.php'));
+
 // 支持的 GET 参数列表
 // q: 查询语句
 // m: 开启模糊搜索，其值为 yes/no
@@ -59,7 +54,7 @@ ${'f_' . $f} = ' checked';
 ${'s_' . $s} = ' selected';
 
 // base url
-$bu = $_SERVER['SCRIPT_NAME'] . '?q=' . urlencode($_GET['q']) . '&m=' . $m . '&f=' . $f . '&s=' . $s . $eu;
+$bu = '/s?q=' . urlencode($_GET['q']) . '&m=' . $m . '&f=' . $f . '&s=' . $s . $eu;
 
 // other variable maybe used in tpl
 $count = $total = $search_cost = 0;
@@ -77,7 +72,7 @@ try
 	if (empty($q))
 	{
 		// just show hot query
-		$hot = $search->getHotQuery();
+		$hot = $search->getHotQuery(10);
 	}
 	else
 	{
@@ -104,7 +99,7 @@ try
 
 		// set offset, limit
 		$p = max(1, intval($p));
-		$n = XSSearch::PAGE_SIZE;
+		$n = 10;
 		$search->setLimit($n, ($p - 1) * $n);
 
 		// get the result
@@ -116,27 +111,11 @@ try
 		$count = $search->getLastCount();
 		$total = $search->getDbTotal();
 
-		if ($xml !== 'yes')
-		{
-			// try to corrected, if resul too few
-			if ($count < 1 || $count < ceil(0.001 * $total))
-				$corrected = $search->getCorrectedQuery();			
-			// get related query
-			$related = $search->getRelatedQuery();			
-		}
-
-		// gen pager
-		if ($count > $n)
-		{
-			$pb = max($p - 5, 1);
-			$pe = min($pb + 10, ceil($count / $n) + 1);
-			$pager = '';
-			do
-			{
-				$pager .= ($pb == $p) ? '<strong>' . $p . '</strong>' : '<a href="' . $bu . '&p=' . $pb . '">[' . $pb . ']</a>';
-			}
-			while (++$pb < $pe);
-		}
+        // try to corrected, if resul too few
+        if ($count < 1 || $count < ceil(0.001 * $total))
+            $corrected = $search->getCorrectedQuery();			
+        // get related query
+        $related = $search->getRelatedQuery();			
 	}
 }
 catch (XSException $e)
@@ -147,32 +126,9 @@ catch (XSException $e)
 // calculate total time cost
 $total_cost = microtime(true) - $total_begin;
 
-// XML OUPUT
-if ($xml === 'yes' && !empty($q))
-{
-	header("Content-Type: text/xml; charset=$oe");
-	echo "<?xml version=\"1.0\" encoding=\"$oe\" ?>\n";
-	echo "<xs:result count=\"$count\" total=\"$total\" cost=\"$total_cost\" xmlns:xs=\"http://www.xunsearch.com\">\n";
-	if ($error !== '')
-		echo "  <error><![CDATA[" . $error . "]]></error>\n";
-
-	foreach ($docs as $doc)
-	{
-		echo "  <doc index=\"" . $doc->rank() . "\" percent=\"" . $doc->percent() . "%\">\n";
-		foreach ($doc as $k => $v)
-		{
-			echo "    <$k>";
-			if (is_numeric($v))
-				echo $v;
-			else
-				echo "\n      <![CDATA[" . $v . "]]>\n    ";
-			echo "</$k>\n";
-		}
-		echo "  </doc>\n";
-	}
-	echo "</xs:result>\n";
-	exit(0);
-}
+if ($count > $n)
+    $pager = paginate_three($bu, $p, (int)($count / $n) + 1, 4);
 
 // output the data
-include dirname(__FILE__) . '/search.tpl';
+include dirname(__FILE__) . '/search.html';
+?>
