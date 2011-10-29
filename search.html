@@ -8,7 +8,7 @@
     <style type="text/css">
         #q { height: 22px; }
         #q-btn { margin-left: -10px; height: 32px; }
-        #q-neck { margin-top: 10px; border-bottom: 1px solid #46a; background: #def; font-size: 12px; padding: 5px; }
+        #q-neck { margin-top: 10px; color: #999; border-bottom: 1px solid #DEDEDE; font-size: 12px; padding: 5px 0; }
         #q-fix, #q-notfound { margin-top: 10px; }
         #q-fix a.q-suggest { color: white; }
         #q-relate a { padding-right: 5px; }
@@ -104,6 +104,9 @@
             <div class="res-doc">
                 <h2>
                     <a href="/bbscon.php?board=<?php echo $doc->board; ?>&id=<?php echo $doc->id; ?>"><?php echo $search->highlight($doc->title); ?></a>
+                    <?php if ($doc->attachment): ?>
+                    <span class="label warning">有附件</span>
+                    <?php endif; ?>
                 </h2>
                 <p><?php echo $search->highlight($doc->content); ?></p>
                 <ul>
@@ -145,7 +148,7 @@
 
 <footer class="footer">
     <div class="container">
-		(C)opyright 2011 - SBBS search - 页面处理总时间：<?php printf('%.4f', $total_cost); ?>秒　<br />
+		(C)opyright 2011 - SBBS Search - 页面处理总时间：<?php printf('%.4f', $total_cost); ?>秒　<br />
 		Powered by <a href="http://www.xunsearch.com" target="_blank"><?php echo PACKAGE_NAME . '/' . PACKAGE_VERSION; ?></a> 
     </div>
 </footer>
