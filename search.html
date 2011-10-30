@@ -6,13 +6,21 @@
     <title>虎踞龙蟠搜索</title>
 
     <style type="text/css">
+        .container { margin-top: 8px; }
         #q { height: 22px; }
+        #q-advance { margin-left: 5px; }
         #q-btn { margin-left: -10px; height: 32px; }
         #q-neck { margin-top: 10px; color: #999; border-bottom: 1px solid #DEDEDE; font-size: 12px; padding: 5px 0; }
         #q-fix, #q-notfound { margin-top: 10px; }
-        #q-fix a.q-suggest { color: white; }
+        #q-fix { font-size: 16px; }
+        .q-suggest { color: green; text-decoration: underline; }
         #q-relate a { padding-right: 5px; }
-        .res-doc { margin-top: 15px; }
+        .f-title { color: green; font-size: 14px; }
+        .filter { margin-top: 5px; margin-left: 0; list-style-type: none; }
+        .filter a { color: #BBB; display: block; padding-left: 5px; margin-bottom: 5px; height: 25px; line-height: 25px; }
+        .filter a:hover { color: #222; text-decoration: none; }
+        .filter a.active { color: #222; background: #EEE; }
+        .res-doc, .f-title { margin-top: 15px; }
         .res-doc a, .res-doc a:hover { color: #12C; cursor: pointer; text-decoration: underline; }
         .res-doc em { font-style: normal; color: red; }
         .res-doc h2 { font-size: 16px; line-height: 22px; margin: 0; font-weight: normal; }
@@ -27,14 +35,16 @@
 </head>
 <body>
 <div class="container">
-    <h2>虎踞龙蟠搜索</h2>
+    <a href="/s"><img src="/search/logo_s.jpg" alt="虎踞龙蟠搜索" /></a>
+
     <div class="row">
         <form action="/s" id="q-form" method="get">
-        <div class="span10">
-            <input class="span10" id="q" name="q" size="30" type="text" value="<?php echo htmlspecialchars($q); ?>"/>
+        <div class="span8">
+            <input class="span8" id="q" name="q" size="30" type="text" value="<?php echo htmlspecialchars($q); ?>"/>
         </div>
         <div class="span3">
             <input id="q-btn" class="btn success" type="submit" value="  搜索!  " />
+            <a id="q-advance" href="#">高级搜索</a>
         </div>
         </form>
     </div>
@@ -66,81 +76,119 @@
 	</div>
 
 	<!-- error -->
-	<?php if (!empty($error)): ?>
-	<div id="res-error"><strong>错误：</strong><?php echo $error; ?></div>
-	<?php endif; ?>
-
-	<!-- fixed query -->
-	<?php if (count($corrected) > 0): ?>
-    <div id="q-fix" class="row">
-        <div class="alert-message success span5">
-            <a class="close" href="#">×</a>
-            您是不是要找：
-            <?php foreach ($corrected as $word): ?>
-            <a class="q-suggest" href="<?php echo '/s?q=' . urlencode($word); ?>"><strong><?php echo $word; ?></strong></a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-	<?php endif; ?>
-
-	<!-- empty result -->
-	<?php if ($count === 0 && empty($error)): ?>
-    <div id="q-notfound" class="row">
-        <div class="span16">
-            <p>找不到和 <strong><?php echo htmlspecialchars($q); ?></strong> 相符的内容或信息。建议您：</p>
-            <ul>
-                <li>请检查输入字词有无错误。</li>
-                <li>请换用另外的查询字词。</li>
-                <li>请改用较短、较为常见的字词。</li>
-            </ul>
-        </div>
-	</div>
-	<?php endif; ?>
-
-	<!-- result doc list -->
-    <?php foreach ($docs as $doc): ?>
     <div class="row">
-        <div class="span13">
-            <div class="res-doc">
-                <h2>
-                    <a href="/bbscon.php?board=<?php echo $doc->board; ?>&id=<?php echo $doc->id; ?>"><?php echo $search->highlight($doc->title); ?></a>
-                    <?php if ($doc->attachment): ?>
-                    <span class="label warning">有附件</span>
-                    <?php endif; ?>
-                </h2>
-                <p><?php echo $search->highlight($doc->content); ?></p>
-                <ul>
-                    <li>日期 <span><?php echo substr($doc->time, 0, 4) . '-' . substr($doc->time, 4, 2) . '-' . substr($doc->time, 6, 2); ?></span></li>
-                    <li>版面 <span><?php echo $doc->board; ?></span></li>
-                    <li>作者 <span><?php echo $doc->author; ?></span></li>
+        <div class="span12">
+            <?php if (!empty($error)): ?>
+            <div id="res-error"><strong>错误：</strong><?php echo $error; ?></div>
+            <?php endif; ?>
+
+            <!-- fixed query -->
+            <?php if (count($corrected) > 0): ?>
+            <div id="q-fix" class="row">
+                <div class="span5">
+                    您是不是要找：
+                    <?php foreach ($corrected as $word): ?>
+                    <a class="q-suggest" href="<?php echo '/s?q=' . urlencode($word); ?>"><?php echo $word; ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- empty result -->
+            <?php if ($count === 0 && empty($error)): ?>
+            <div id="q-notfound" class="row">
+                <div class="span16">
+                    <p>找不到和 <strong><?php echo htmlspecialchars($q); ?></strong> 相符的内容或信息。建议您：</p>
+                    <ul>
+                        <li>请检查输入字词有无错误。</li>
+                        <li>请换用另外的查询字词。</li>
+                        <li>请改用较短、较为常见的字词。</li>
+                    </ul>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- result doc list -->
+            <?php foreach ($docs as $doc): ?>
+            <div class="row">
+                <div class="span12">
+                    <div class="res-doc">
+                        <h2>
+                            <a href="/bbscon.php?board=<?php echo $doc->board; ?>&id=<?php echo $doc->id; ?>"><?php echo $search->highlight($doc->title); ?></a>
+                            <?php if ($doc->attachment): ?>
+                            <span class="label warning">有附件</span>
+                            <?php endif; ?>
+                        </h2>
+                        <p><?php echo $search->highlight($doc->content); ?></p>
+                        <ul>
+                            <li>日期 <span><?php echo substr($doc->time, 0, 4) . '-' . substr($doc->time, 4, 2) . '-' . substr($doc->time, 6, 2); ?></span></li>
+                            <li>版面 <span><?php echo $doc->board; ?></span></li>
+                            <li>作者 <span><?php echo $doc->author; ?></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+
+            <!-- pager -->
+            <?php if (!empty($pager)): ?>
+            <div class="row">
+                <div class="span16">
+                    <div class="pagination">
+                        <?php echo $pager; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <!-- related query -->
+            <?php if (count($related) > 0): ?>
+            <div id="q-relate" class="row">
+                <div class="alert-message warning span8">
+                    相关搜索&nbsp;&nbsp;&nbsp;
+                    <?php foreach ($related as $word): ?>
+                    <a href="<?php echo '/s?q=' . urlencode($word); ?>"><?php echo $word; ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="offset1 span3">
+            <div class="row f-title">
+                搜索结果过滤
+            </div>
+            <div class="row">
+                <ul class="filter">
+                    <li><a <?php echo switch_attr($bu, $attr, 'f'); ?> >只显示主题贴</a></li>
+                    <li><a <?php echo switch_attr($bu, $attr, 'a'); ?> >只显示带附件的帖子</a></li>
+                    <li><a <?php echo switch_attr($bu, $attr, 'g'); ?> >只显示精华贴</a></li>
+                </ul>
+            </div>
+            <div class="row f-title">
+                时间范围
+            </div>
+            <div class="row">
+                <ul class="filter">
+                    <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >任意</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 1); ?> >两天内</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 2); ?> >一周内</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 3); ?> >一月内</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一年内</a></li>
+                </ul>
+            </div>
+            <div class="row f-title">
+               结果排序 
+            </div>
+            <div class="row">
+                <ul class="filter">
+                    <li><a <?php echo value_attr($bu, $attr, 's', 0); ?> >按相关度排序</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 's', 1); ?> >按时间倒序</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 's', 2); ?> >按时间正序</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <?php endforeach; ?>
-
-	<!-- pager -->
-	<?php if (!empty($pager)): ?>
-    <div class="row">
-        <div class="span16">
-            <div class="pagination">
-                <?php echo $pager; ?>
-            </div>
-        </div>
-    </div>
-	<?php endif; ?>
-	
-	<!-- related query -->
-	<?php if (count($related) > 0): ?>
-    <div id="q-relate" class="row">
-        <div class="alert-message warning span8">
-            相关搜索&nbsp;&nbsp;&nbsp;
-            <?php foreach ($related as $word): ?>
-            <a href="<?php echo '/s?q=' . urlencode($word); ?>"><?php echo $word; ?></a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-	<?php endif; ?>
 
 	<!-- end search result -->
 	<?php endif; ?>
@@ -185,9 +233,6 @@ $(function(){
 			return false;
 		}
 	});	
-    $('#q-fix a.close').click(function(){
-        $('#q-fix').hide();
-    });
 });	
 </script>
 </body>
