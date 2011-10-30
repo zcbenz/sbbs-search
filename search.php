@@ -150,8 +150,6 @@ $total_cost = microtime(true) - $total_begin;
 if ($count > $n) {
     $reload = $bu . http_build_query($attr);
     $pager = paginate_three($reload, $p, (int)($count / $n) + 1, 4);
-
-    if ($p > 0) $attr['p'] = $p;
 }
 
 // helper for generate filter link

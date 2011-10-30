@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=gbk">
-    <link rel="stylesheet" href="/static/bootstrap.min.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/static/bootstrap.css" type="text/css" media="screen">
     <title>虎踞龙蟠搜索</title>
 
     <style type="text/css">
         .container { margin-top: 8px; }
-        #q { height: 22px; }
+        #q { height: 22px; line-height: 22px; }
         #q-advance { margin-left: 5px; }
         #q-btn { margin-left: -10px; height: 32px; }
         #q-neck { margin-top: 10px; color: #999; border-bottom: 1px solid #DEDEDE; font-size: 12px; padding: 5px 0; }
@@ -27,10 +27,16 @@
         .res-doc h2 small { font-size: 12px; color: #aaa; }
         .res-doc p { font-size: 12px; color: #333; margin: 2px 0; }
         .res-doc ul { overflow: hidden; zoom: 1; margin: 0; padding: 0; }
-        .res-doc li { width: 120px; list-style: none; padding: 0; margin: 0 20px 0 0; float: left; font-size: 12px; color: green; }
+        .res-doc li { width: 130px; list-style: none; padding: 0; margin: 0 20px 0 0; float: left; font-size: 12px; color: green; }
         .res-doc li span { border-bottom: 1px dotted #aaa; font-family: arial; color: #666; }
-        .footer { font-size: 12px; margin-top: 20px; margin-bottom: 20px; padding-top: 10px; color: #666; }
+        .footer { border-top:1px solid #eee; font-size: 12px; margin-top: 20px; margin-bottom: 20px; padding-top: 10px; color: #666; }
         .footer a { color: #666; text-decoration: underline; }
+        .ac_results { padding: 0px; border: 1px solid rgb(129, 127, 130); background-color: white; overflow: hidden; z-index: 99999; }
+        .ac_results ul { width: 100%; list-style-position: outside; list-style: none; padding: 0; margin: 0; }
+        .ac_results li { margin: 0px; padding: 2px 5px; cursor: default; display: block; color: #333; font-size: 14px; line-height: 18px; overflow: hidden; }
+        .ac_over { background-color: #e2eaff; }
+        .popover .inner { width: 350px; }
+        .pagination a { color: #333; }
     </style>
 </head>
 <body>
@@ -44,7 +50,7 @@
         </div>
         <div class="span3">
             <input id="q-btn" class="btn success" type="submit" value="  搜索!  " />
-            <a id="q-advance" href="#">高级搜索</a>
+            <a id="q-advance" title="高级搜索" data-content="载入中..." href="/search/tips.html">高级搜索</a>
         </div>
         </form>
     </div>
@@ -194,16 +200,14 @@
 	<?php endif; ?>
 </div><!-- /container -->
 
-<footer class="footer">
+<div class="footer">
     <div class="container">
 		(C)opyright 2011 - SBBS Search - 页面处理总时间：<?php printf('%.4f', $total_cost); ?>秒　<br />
 		Powered by <a href="http://www.xunsearch.com" target="_blank"><?php echo PACKAGE_NAME . '/' . PACKAGE_VERSION; ?></a> 
     </div>
-</footer>
+</div>
 
-<link rel="stylesheet" href="/static/css/ui-lightness/jquery-ui-1.8.16.custom.css" type="text/css" media="all" />
-<script type="text/javascript" src="/static/js/jquery-1.6.4.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/static/search.js"></script>
 
 <!-- ready script -->
 <script language="javascript">
@@ -217,12 +221,13 @@ $(function(){
 		if ($(this).val() == '' || $(this).val() == $(this).attr('title')) {
 			$(this).addClass('tips').val($(this).attr('title'));
 		}
-	}).blur().autocomplete({
-		'source':'/search/suggest.php',
-		'select':function(ev,ui) {
-			$('#q').val(ui.item.label);
-			$('#q-form').submit();
-		}
+	}).blur().autocomplete('/search/suggest.php', {
+        width: 458,
+        selectFirst: false,
+        scroll: false
+    }).result(function(event, item) {
+        $('#q').val(item);
+        $('#q-form').submit();
     });
     // submit check
 	$('#q-form').submit(function(){
@@ -232,7 +237,27 @@ $(function(){
 			$input.focus();
 			return false;
 		}
-	});	
+	});
+    var toggle = first = true;
+    $('#q-advance').click(function(){
+        var popover = $(this);
+        if (first) {
+            first = false;
+            $.get('/search/tips.html', function(data) {
+                popover.attr('data-content', data);
+                popover.popover({
+                    trigger:'manual',
+                    html:true,
+                    placement:'below',
+                    offset:8
+                }).popover('show');
+            });
+        } else {
+            popover.popover(toggle?'show':'hide');
+        }
+        toggle = !toggle;
+        return false;
+    });
 });	
 </script>
 </body>
