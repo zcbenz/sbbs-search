@@ -51,7 +51,7 @@
     <div class="row">
         <form action="/s" id="q-form" method="get">
         <div class="span8">
-            <input class="span8" id="q" name="q" size="30" type="text" value="<?php echo htmlspecialchars($q); ?>"/>
+            <input class="span8" id="q" name="q" size="30" type="text" title="欢迎使用虎踞龙蟠搜索" value="<?php echo htmlspecialchars($q); ?>"/>
         </div>
         <div class="span3">
             <input id="q-btn" class="btn success" type="submit" value="  搜索!  " />
@@ -186,9 +186,9 @@
                     <li><a <?php echo value_attr($bu, $attr, 't', 2); ?> >一周内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 3); ?> >一月内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一年内</a></li>
-                    <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 5, true); ?> href="#"><?php echo range_text($since, $until); ?></a></li>
+                    <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 5, true); ?> href="#"><?php echo ($since && $until ?'从 ' . $since . ' 到 ' . $until : '自定义'); ?></a></li>
                 </ul>
-                <form action="/s" method="get">
+                <form id="r-form" action="/s" method="get">
                     <input type="hidden" name="q" value="<?php echo $q; ?>">
                     <div id="range"></div>
                 </form>

@@ -32,4 +32,11 @@ $(function(){
         }
         return false;
     });
+
+    $('#r-form').submit(function(){
+		if (!$('#since').val() || !$('#until').val()) {
+			alert('请先输入时间范围');
+			return false;
+		}
+	});
 });	

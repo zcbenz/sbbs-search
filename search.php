@@ -97,20 +97,26 @@ try
         }
 
         // time ranges
-        if ($t) {
-            define('DAY', 24 * 3600);
-            $diff = array(2 * DAY, 7 * DAY, 30 * DAY, 365 * DAY);
-            $now = time();
+        if ($t == 5) {
+            if (validate_time($since) && validate_time($until)) {
+                $search->addRange('time', str_replace('-', '', $since), str_replace('-', '', $until));
+
+                $attr['t'] = $t;
+                $attr['since'] = $since;
+                $attr['until'] = $until;
+            } else {
+                $since = $until = '';
+                $t = 0;
+            }
+        } else {
+            $since = $until = '';
+
             if (0 < $t && $t < 5) {
+                define('DAY', 24 * 3600);
+                $diff = array(2 * DAY, 7 * DAY, 30 * DAY, 365 * DAY);
+                $now = time();
                 $search->addRange('time', date('Ymd', $now - $diff[$t - 1]), date('Ymd'));
                 $attr['t'] = $t;
-            } else if ($t == 5) {
-                if ($since && $until) {
-                    $search->addRange('time', $since, $until);
-                    $attr['t'] = $t;
-                    $attr['since'] = $since;
-                    $attr['until'] = $until;
-                }
             }
         }
 
@@ -188,12 +194,8 @@ function format_time($raw) {
     return substr($raw, 0, 4) . '-' . substr($raw, 4, 2) . '-' . substr($raw, 6, 2);
 }
 
-function range_text($since, $until) {
-    if ($since && $until) {
-        return '从 ' . format_time($since) . ' 到 ' . format_time($until);
-    } else {
-        return '自定义';
-    }
+function validate_time($input) {
+    return $input && !!strptime($input, '%Y-%m-%d');
 }
 
 // output the data

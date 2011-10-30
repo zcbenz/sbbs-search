@@ -8,6 +8,8 @@ foreach ($queryParts as $param) {
     $attr[$item[0]] = urldecode($item[1]);
 }
 ?>
+<link rel="stylesheet" href="/search/datepicker/calendar.css" type="text/css" media="screen">
+<script type="text/javascript" src="/search/datepicker/calendar.js"></script>
 <?php foreach($attr as $k => $v): ?>
 <?php if (!in_array($k, array('q', 't', 'since', 'until'))): ?>
 <input type="hidden" name="<?php echo $k; ?>" value="<?php echo $v; ?>">
@@ -18,19 +20,26 @@ foreach ($queryParts as $param) {
     <div class="row">
         <div class="r-label span3">
             <label>自从</label>
-            <input type="text" name="since" value="<?php if (isset($attr['since'])) echo $attr['since'] ?>">
+            <input type="text" id="since" name="since" value="<?php if (isset($attr['since'])) echo $attr['since'] ?>">
         </div>
     </div>
     <div class="row">
         <div class="r-label span3">
             <label>直到</label>
-            <input type="text" name="until" value="<?php if (isset($attr['since'])) echo $attr['until'] ?>">
+            <input type="text" id="until" name="until" value="<?php if (isset($attr['until'])) echo $attr['until'] ?>">
         </div>
     </div>
     <div class="r-btn row">
         <div style="text-align:right" class="r-label span3">
-            （格式：19901007）
+            （格式：1990-10-07）
             <input type="submit" class="btn" value="搜索">
         </div>
     </div>
 </div>
+<script language="javascript">
+$(function(){
+    var myCalendar = new dhtmlXCalendarObject(['since', 'until']);
+//    myCalendar.setDateFormat("%Y%m%d");
+    myCalendar.hideTime();
+});	
+</script>
