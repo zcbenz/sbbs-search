@@ -19,7 +19,7 @@ Lib::load(array('utils/pagination.php'));
 // variables
 $attr = array();
 $eu = '';
-$__ = array('q', 'm', 'f', 'a', 'g', 't', 's', 'p', 'ie', 'oe');
+$__ = array('q', 'm', 'f', 'a', 'g', 't', 'since', 'until', 's', 'p', 'ie', 'oe');
 foreach ($__ as $_)
     $$_ = isset($_GET[$_]) ? $_GET[$_] : '';
 
@@ -104,6 +104,13 @@ try
             if (0 < $t && $t < 5) {
                 $search->addRange('time', date('Ymd', $now - $diff[$t - 1]), date('Ymd'));
                 $attr['t'] = $t;
+            } else if ($t == 5) {
+                if ($since && $until) {
+                    $search->addRange('time', $since, $until);
+                    $attr['t'] = $t;
+                    $attr['since'] = $since;
+                    $attr['until'] = $until;
+                }
             }
         }
 
@@ -163,9 +170,10 @@ function switch_attr($bu, $attr, $f) {
     }
 }
 
-function value_attr($bu, $attr, $f, $v) {
+function value_attr($bu, $attr, $f, $v, $nohref = false) {
     $r = '';
     if ($v == $attr[$f]) $r = 'class="active" ';
+    if ($nohref) return $r;
 
     if ($v == 0) {
         unset ($attr[$f]);
@@ -173,6 +181,18 @@ function value_attr($bu, $attr, $f, $v) {
     } else {
         $attr[$f] = $v;
         return $r . 'href="'. $bu . http_build_query($attr) . '"';
+    }
+}
+
+function format_time($raw) {
+    return substr($raw, 0, 4) . '-' . substr($raw, 4, 2) . '-' . substr($raw, 6, 2);
+}
+
+function range_text($since, $until) {
+    if ($since && $until) {
+        return '从 ' . format_time($since) . ' 到 ' . format_time($until);
+    } else {
+        return '自定义';
     }
 }
 

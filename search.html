@@ -37,6 +37,11 @@
         .ac_over { background-color: #e2eaff; }
         .popover .inner { width: 350px; }
         .pagination a { color: #333; }
+        .r-range { padding: 5px 24px; }
+        .r-range label { width: 30px; margin-right: 10px;}
+        .r-label { margin: 0 0 5px 5px; }
+        .r-range input { width: 110px; }
+        .r-range .btn { width: 60px; margin-top: 5px;}
     </style>
 </head>
 <body>
@@ -127,7 +132,7 @@
                         </h2>
                         <p><?php echo $search->highlight($doc->content); ?></p>
                         <ul>
-                            <li>日期 <span><?php echo substr($doc->time, 0, 4) . '-' . substr($doc->time, 4, 2) . '-' . substr($doc->time, 6, 2); ?></span></li>
+                            <li>日期 <span><?php echo format_time($doc->time); ?></span></li>
                             <li>版面 <span><?php echo $doc->board; ?></span></li>
                             <li>作者 <span><?php echo $doc->author; ?></span></li>
                         </ul>
@@ -176,12 +181,17 @@
             </div>
             <div class="row">
                 <ul class="filter">
-                    <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >任意</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >任意时间段</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 1); ?> >两天内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 2); ?> >一周内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 3); ?> >一月内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一年内</a></li>
+                    <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 5, true); ?> href="#"><?php echo range_text($since, $until); ?></a></li>
                 </ul>
+                <form action="/s" method="get">
+                    <input type="hidden" name="q" value="<?php echo $q; ?>">
+                    <div id="range"></div>
+                </form>
             </div>
             <div class="row f-title">
                结果排序 
@@ -208,6 +218,7 @@
 </div>
 
 <script type="text/javascript" src="/static/search.js"></script>
+<script type="text/javascript" src="/search/control.js"></script>
 
 <!-- ready script -->
 <script language="javascript">
@@ -238,26 +249,6 @@ $(function(){
 			return false;
 		}
 	});
-    var toggle = first = true;
-    $('#q-advance').click(function(){
-        var popover = $(this);
-        if (first) {
-            first = false;
-            $.get('/search/tips.html', function(data) {
-                popover.attr('data-content', data);
-                popover.popover({
-                    trigger:'manual',
-                    html:true,
-                    placement:'below',
-                    offset:8
-                }).popover('show');
-            });
-        } else {
-            popover.popover(toggle?'show':'hide');
-        }
-        toggle = !toggle;
-        return false;
-    });
 });	
 </script>
 </body>
