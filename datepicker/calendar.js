@@ -1737,10 +1737,10 @@ dhtmlXCalendarObject.prototype.lang = "en";
 dhtmlXCalendarObject.prototype.langData = {
 	"en": {
 		dateformat: "%Y-%m-%d",
-		monthesFNames: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-		monthesSNames: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-		daysFNames: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-		daysSNames: ["Su","Mo","Tu","We","Th","Fr","Sa"],
+		monthesFNames: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+		monthesSNames: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"],
+		daysFNames: ["周日","周一","周二","周三","周四","周五","周六"],
+		daysSNames: ["日","一","二","三","四","五","六"],
 		weekstart: 1
 	}
 };
