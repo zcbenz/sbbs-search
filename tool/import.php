@@ -58,6 +58,8 @@ foreach ($boards as $key => &$val) {
                     'first' => $val['GROUPID'] == $val['ID'] ? 1 : 0,
                     'attachment' => $val['ATTACHPOS'] > 0 ? 1 : 0,
                     'access' => $board_access,
+                    'mark' => $val['FLAGS'][0] != ' ' ? 1 : 0,
+                    'good' => 0,
                     'title' => $val['TITLE'],
                     'content' => filter($content),
                     'time' => $val['POSTTIME'],

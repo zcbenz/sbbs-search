@@ -132,6 +132,9 @@
                             <?php if ($doc->attachment): ?>
                             <span class="label warning">有附件</span>
                             <?php endif; ?>
+                            <?php if ($doc->mark): ?>
+                            <span class="label success">标记</span>
+                            <?php endif; ?>
                         </h2>
                         <p><?php echo $search->highlight($doc->content); ?></p>
                         <ul>
@@ -176,6 +179,7 @@
                 <ul class="filter">
                     <li><a <?php echo switch_attr($bu, $attr, 'f'); ?> >只显示主题贴</a></li>
                     <li><a <?php echo switch_attr($bu, $attr, 'a'); ?> >只显示带附件的帖子</a></li>
+                    <li><a <?php echo switch_attr($bu, $attr, 'm'); ?> >只显示被标记的帖子</a></li>
                     <li><a <?php echo switch_attr($bu, $attr, 'g'); ?> >只显示精华贴</a></li>
                 </ul>
             </div>

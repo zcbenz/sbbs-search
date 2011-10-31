@@ -6,10 +6,10 @@ Lib::load(array('utils/pagination.php'));
 
 // 支持的 GET 参数列表
 // q: 查询语句
-// m: 开启模糊搜索，其值为 yes/no
 // f: 只显示主题贴
 // a: 只显示带附件的帖子
 // g: 只显示精华贴
+// m: 只显示被标记的帖子
 // t: 过去xx内
 // s: 排序方式
 // p: 显示第几页，每页数量为 XSSearch::PAGE_SIZE 即 10 条
@@ -90,6 +90,10 @@ try
         if ($a) {
             $search->addRange('attachment', 1, 1);
             $attr['a'] = 1;
+        }
+        if ($m) {
+            $search->addRange('mark', 1, 1);
+            $attr['m'] = 1;
         }
         if ($g) {
             $search->addRange('good', 1, 1);

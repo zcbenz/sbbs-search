@@ -39,7 +39,6 @@ foreach ($queryParts as $param) {
 <script language="javascript">
 $(function(){
     var myCalendar = new dhtmlXCalendarObject(['since', 'until']);
-//    myCalendar.setDateFormat("%Y%m%d");
     myCalendar.hideTime();
 });	
 </script>
