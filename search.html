@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=gbk">
     <link rel="stylesheet" href="/static/bootstrap.css" type="text/css" media="screen">
-    <title>虎踞龙蟠搜索</title>
+    <title>虎踞龙蟠搜索<?php if ($q) echo ' | ' . $q; ?></title>
 
     <style type="text/css">
         .container { margin-top: 8px; }
@@ -13,6 +13,9 @@
         #q-neck { margin-top: 10px; color: #999; border-bottom: 1px solid #DEDEDE; font-size: 12px; padding: 5px 0; }
         #q-fix, #q-notfound { margin-top: 10px; }
         #q-fix { font-size: 16px; }
+        #q-hot { margin-top: 20px; font-size: 14px; line-height: 18px; }
+        #q-hot small { margin-right: 8px; }
+        #q-hot a { color: green; }
         .q-suggest { color: green; text-decoration: underline; }
         #q-relate a { padding-right: 5px; }
         .f-title { color: green; font-size: 14px; }
@@ -62,14 +65,14 @@
 
 	<!-- hot search -->
 	<?php if (count($hot) > 0): ?>
-    <div class="row">
-        <div class="span16">
-            <h4>热门搜索</h4>
-            <ul>
-                <?php foreach($hot as $word => $freq): ?>
-                <li><a href="<?php echo '/s?q=' . urlencode($word); ?>"><?php echo $word; ?></a><small>(<?php echo $freq; ?>)</small></li>
-                <?php endforeach; ?>		
-            </ul>
+    <div id="q-hot" class="row">
+        <div style="width:90px" class="span2">
+            热门关键词：
+        </div>
+        <div class="span8">
+            <?php foreach($hot as $word => $freq): ?>
+            <a href="<?php echo '/s?q=' . urlencode($word); ?>"><?php echo $word; ?></a><small>(<?php echo $freq; ?>)</small>
+            <?php endforeach; ?>		
         </div>
 	</div>
 	<?php endif; ?>
