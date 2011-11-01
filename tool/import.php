@@ -16,7 +16,7 @@ $index = $xs->index;
 $boards = bbs_super_getboards();
 
 // Skip to specified board
-//while ($boards[0]['NAME'] != 'Filter')
+//while ($boards[0]['NAME'] != 'Test')
 //    array_shift($boards);
 //array_shift($boards);
 
@@ -26,7 +26,7 @@ foreach ($boards as $key => &$val) {
     $board_access = bbs_super_access_board($board_id);
 
     $count = 0;
-    $total = bbs_countarticles($board_id, 0);
+    $total = bbs_countarticles($board_id, 0, 0);
 
     printf ('[%s] :           ', $board_name);
 
@@ -38,11 +38,9 @@ foreach ($boards as $key => &$val) {
         if ($i + $PAGE > $total + 1) {
             $quit = true;
             $PAGE = $total - $i + 1;
-        } else {
-            $i += $PAGE;
         }
 
-        $articles = bbs_getarticles($board_name, $i, $PAGE, 0);
+        $articles = bbs_getarticles($board_name, $i, $PAGE, 0, 0);
 
         foreach ($articles as $key => &$val) {
             $content = bbs_originfile($board_name, $val['FILENAME'], 200000);
@@ -71,10 +69,11 @@ foreach ($boards as $key => &$val) {
             }
         }
 
+        $i += $PAGE;
+
         progress($count / $total, $i);
 
-        if ($quit)
-            break;
+        if ($quit) break;
     }
 
     $all += $count;
