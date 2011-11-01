@@ -16,7 +16,7 @@ $index = $xs->index;
 $boards = bbs_super_getboards();
 
 // Skip to specified board
-//while ($boards[0]['NAME'] != 'PopMusic')
+//while ($boards[0]['NAME'] != 'Filter')
 //    array_shift($boards);
 //array_shift($boards);
 
@@ -45,12 +45,8 @@ foreach ($boards as $key => &$val) {
         $articles = bbs_getarticles($board_name, $i, $PAGE, 0);
 
         foreach ($articles as $key => &$val) {
-            $content = bbs_originfile($board_name, $val['FILENAME']);
+            $content = bbs_originfile($board_name, $val['FILENAME'], 200000);
             if (is_string($content)) {
-                // Guard from memory overflow
-                if (strlen($content) > 200000)
-                    continue;
-
                 ++$count;
 
                 $data = array(
