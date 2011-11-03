@@ -129,8 +129,11 @@
                     <div class="res-doc">
                         <h2>
                             <a href="/bbscon.php?board=<?php echo $doc->board; ?>&id=<?php echo $doc->id; ?>"><?php echo $search->highlight($doc->title); ?></a>
+                            <?php if ($doc->good): ?>
+                            <span class="label warning">精华帖</span>
+                            <?php endif; ?>
                             <?php if ($doc->attachment): ?>
-                            <span class="label warning">有附件</span>
+                            <span class="label notice">有附件</span>
                             <?php endif; ?>
                             <?php if ($doc->mark): ?>
                             <span class="label success">标记</span>
