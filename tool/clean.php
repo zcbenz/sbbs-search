@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
-require_once 'search/lib/XS.php';
+require_once 'init.php';
 
-$xs = new XS('sbbs');
+Lib::load(array('search/helper.php'));
+
+$xs = new XS(XS_CONF);
 $index = $xs->index;
 
 $index->clean();

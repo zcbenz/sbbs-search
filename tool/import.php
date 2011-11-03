@@ -43,8 +43,11 @@ foreach ($boards as $key => &$board) {
         $articles = bbs_getarticles($board_name, $i, $PAGE, 0, 0);
 
         foreach ($articles as $key => &$val) {
-            if (xs_import_article($index, $board, $val))
+            try {
+                xs_import_article($index, $board, $val);
                 ++$count;
+            } catch(Exception $e) {
+            }
         }
 
         $i += $PAGE;
