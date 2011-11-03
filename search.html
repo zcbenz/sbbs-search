@@ -49,7 +49,7 @@
 </head>
 <body>
 <div class="container">
-    <a href="/s"><img src="/search/logo_s.png" alt="»¢¾áÁúó´ËÑË÷" /></a>
+    <a href="/s"><img src="/apps/search/logo_s.png" alt="»¢¾áÁúó´ËÑË÷" /></a>
 
     <div class="row">
         <form action="/s" id="q-form" method="get">
@@ -58,7 +58,7 @@
         </div>
         <div class="span3">
             <input id="q-btn" class="btn success" type="submit" value="  ËÑË÷!  " />
-            <a id="q-advance" title="¸ß¼¶ËÑË÷" data-content="ÔØÈëÖÐ..." href="/search/tips.html">¸ß¼¶ËÑË÷</a>
+            <a id="q-advance" title="¸ß¼¶ËÑË÷" data-content="ÔØÈëÖÐ..." href="/apps/search/tips.html">¸ß¼¶ËÑË÷</a>
         </div>
         </form>
     </div>
@@ -225,7 +225,7 @@
 </div>
 
 <script type="text/javascript" src="/static/search.js"></script>
-<script type="text/javascript" src="/search/control.js"></script>
+<script type="text/javascript" src="/apps/search/control.js"></script>
 
 <!-- ready script -->
 <script language="javascript">
@@ -239,7 +239,7 @@ $(function(){
 		if ($(this).val() == '' || $(this).val() == $(this).attr('title')) {
 			$(this).addClass('tips').val($(this).attr('title'));
 		}
-	}).blur().autocomplete('/search/suggest.php', {
+	}).blur().autocomplete('/apps/search/suggest.php', {
         width: 458,
         selectFirst: false,
         scroll: false

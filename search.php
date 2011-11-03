@@ -1,7 +1,7 @@
 <?php
-require_once 'search/lib/XS.php';
 require_once 'init.php';
 
+Lib::load(array('search/helper.php'));
 Lib::load(array('utils/pagination.php'));
 
 // 支持的 GET 参数列表
@@ -62,7 +62,7 @@ $total_begin = microtime(true);
 // perform the search
 try
 {
-    $xs = new XS('sbbs');
+    $xs = new XS(XS_CONF);
     $search = $xs->search;
     $search->setCharset('GBK');
 

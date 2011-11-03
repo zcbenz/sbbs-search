@@ -7,7 +7,8 @@
  * 创建时间：2011-10-24 20:11:27
  */
 // 加载 XS 入口文件
-require_once dirname(__FILE__) . '/lib/XS.php';
+require_once 'init.php';
+Lib::load(array('search/helper.php'));
 
 // Prefix Query is: term (by jQuery-ui)
 $q = isset($_GET['q']) ? trim($_GET['q']) : '';
@@ -17,7 +18,7 @@ if (!empty($q) && strpos($q, ':') === false)
 {
 	try
 	{
-		$xs = new XS('sbbs');
+		$xs = new XS(XS_CONF);
 		$terms = $xs->search->setCharset('UTF-8')->getExpandedQuery($q);
 	}
 	catch (XSException $e)
