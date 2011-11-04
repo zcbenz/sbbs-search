@@ -21,7 +21,6 @@ $boards = bbs_super_getboards();
 //    array_shift($boards);
 //array_shift($boards);
 
-$index->openBuffer();
 foreach ($boards as $key => &$board) {
     $board_name   = $board['NAME'];
     $board_id     = $board['BID'];
@@ -61,7 +60,6 @@ foreach ($boards as $key => &$board) {
     $all += $count;
     printf ("\nTotal: %d, Valid: %d\n", $total, $count);
 }
-$index->closeBuffer();
 
 echo 'Done: ', $all, "\n";
 echo 'Time: ', time() - $start_time, "\n";
