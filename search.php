@@ -96,8 +96,10 @@ try
             $attr['m'] = 1;
         }
         if ($g) {
-            $search->addRange('good', 1, 1);
             $attr['g'] = 1;
+            $xs->index->setDb('jinghua');
+        } else {
+            $search->addDb('jinghua');
         }
 
         // time ranges
