@@ -159,7 +159,7 @@ try
 }
 catch (XSException $e)
 {
-    $error = strval($e);
+    $error = $e->getMessage();
 }
 
 // calculate total time cost
