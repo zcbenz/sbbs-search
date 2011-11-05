@@ -64,6 +64,7 @@ try
 {
     $xs = new XS(XS_CONF);
     $search = $xs->search;
+    $search->addDb('jinghua');
     $search->setCharset('GBK');
 
     if (empty($q))
@@ -96,10 +97,8 @@ try
             $attr['m'] = 1;
         }
         if ($g) {
+            $search->addRange('good', 1, 1);
             $attr['g'] = 1;
-            $xs->index->setDb('jinghua');
-        } else {
-            $search->addDb('jinghua');
         }
 
         // time ranges
