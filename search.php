@@ -19,7 +19,7 @@ Lib::load(array('utils/pagination.php'));
 // variables
 $attr = array();
 $eu = '';
-$__ = array('q', 'm', 'f', 'a', 'g', 't', 'since', 'until', 's', 'p', 'ie', 'oe');
+$__ = array('q', 'q2', 'm', 'f', 'a', 'g', 't', 'author', 'since', 'until', 's', 'p', 'ie', 'oe');
 foreach ($__ as $_)
     $$_ = isset($_GET[$_]) ? $_GET[$_] : '';
 
@@ -50,7 +50,17 @@ else
 }
 
 // recheck request parameters
-$q = get_magic_quotes_gpc() ? stripslashes($q) : $q;
+$q  = get_magic_quotes_gpc() ? stripslashes($q) : $q;
+
+// attach extra parameters
+if ($q2) {
+    $q2 = get_magic_quotes_gpc() ? stripslashes($q2) : $q2;
+    $q .= ' ' . $q2;
+}
+if ($author) {
+    $author = get_magic_quotes_gpc() ? stripslashes($author) : $author;
+    $q .= ' author:' . $author . ' ';
+}
 $attr['q'] = $q;
 
 // other variable maybe used in tpl
@@ -64,8 +74,11 @@ try
 {
     $xs = new XS(XS_CONF);
     $search = $xs->search;
-    $search->addDb('jinghua');
     $search->setCharset('GBK');
+    if ($g)
+        $search->setDb('jinghua');
+    else
+        $search->addDb('jinghua');
 
     if (empty($q))
     {
@@ -97,7 +110,6 @@ try
             $attr['m'] = 1;
         }
         if ($g) {
-            $search->addRange('good', 1, 1);
             $attr['g'] = 1;
         }
 
