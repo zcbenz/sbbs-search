@@ -188,10 +188,11 @@
             </div>
             <div class="row">
                 <ul class="filter">
+                    <li><a <?php echo switch_attr($bu, $attr, 'g'); ?> >包含精华贴</a></li>
                     <li><a <?php echo switch_attr($bu, $attr, 'f'); ?> >只显示主题贴</a></li>
                     <li><a <?php echo switch_attr($bu, $attr, 'a'); ?> >只显示带附件的帖子</a></li>
                     <li><a <?php echo switch_attr($bu, $attr, 'm'); ?> >只显示被标记的帖子</a></li>
-                    <li><a <?php echo switch_attr($bu, $attr, 'g'); ?> >只显示精华贴</a></li>
+                    <li><a <?php echo switch_attr($bu, $attr, 'og'); ?> >只显示精华贴</a></li>
                 </ul>
             </div>
             <div class="row f-title">
@@ -204,6 +205,7 @@
                     <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一周内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 5); ?> >一月内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >两年内</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 6); ?> >十年内</a></li>
                     <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 2, true); ?> href="#"><?php echo ($t == 2 ?'从 ' . $since . ' 到 ' . $until : '自定义'); ?></a></li>
                 </ul>
                 <form id="r-form" action="/s" method="get">

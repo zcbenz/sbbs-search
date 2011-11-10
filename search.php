@@ -77,51 +77,42 @@ try
     $search->setCharset('GBK');
 
     // 设置搜索用库以及时间范围
-    if ($g) // 精华区搜索
-        $search->setDb('jinghua');
-    else { // 通用搜索
-        switch ($t) {
-        case 1: // 任意时间段
-            $search->setDb('db' . getDbNumByYear(TNOW));
-            for ($i = getDbNumByYear(TORG); $i < getDbNumByYear(TNOW); $i++)
-                $search->addDb('db' . $i);
+    switch ($t) {
+    case 1: // 任意时间段
+        xsRangeDb($search, getDbNumByYear(TORG), getDbNumByYear(TNOW), $g);
 
+        $attr['t'] = $t;
+        break;
+    case 3: // 预设时间段
+    case 4:
+    case 5:
+    case 6:
+        define('DAY', 24 * 3600);
+        $diff = array(2 * DAY, 7 * DAY, 30 * DAY, 10 * 365 * DAY);
+
+        $valid = true;
+        $until = date('Y-m-d');
+        $since = date('Y-m-d', time() - $diff[$t - 3]);
+    case 2: // 自定义
+        if (!$valid) $valid = validate_time($since) && validate_time($until);
+
+        if ($valid) {
+            $cur = getDbNumByYear(substr($until, 0, 4));
+            $org = getDbNumByYear(substr($since, 0, 4));
+            xsRangeDb($search, $org, $cur, $g);
+
+            $attr['since'] = $since;
+            $attr['until'] = $until;
             $attr['t'] = $t;
             break;
-        case 3: // 预设时间段
-        case 4:
-        case 5:
-            define('DAY', 24 * 3600);
-            $diff = array(2 * DAY, 7 * DAY, 30 * DAY);
-
-            $valid = true;
-            $until = date('Y-m-d');
-            $since = date('Y-m-d', time() - $diff[$t - 3]);
-        case 2: // 自定义
-            if (!$valid) $valid = validate_time($since) && validate_time($until);
-
-            if ($valid) {
-                $cur = getDbNumByYear(substr($until, 0, 4));
-                $org = getDbNumByYear(substr($since, 0, 4));
-                $search->setDb('db' . $cur);
-                for ($i = $org; $i < $cur; $i++)
-                    $search->addDb('db' . $i);
-
-                $attr['since'] = $since;
-                $attr['until'] = $until;
-                $attr['t'] = $t;
-                break;
-            }
-
-            // 无效时间，作默认处理
-            $t = 0;
-        case 0: // 两年内 
-        default:
-            $since = $until = '';
-            $search->setDb('db' . getDbNumByYear(TNOW));
         }
 
-        $search->addDb('jinghua');
+        // 无效时间，作默认处理
+        $t = 0;
+    case 0: // 两年内 
+    default:
+        $since = $until = '';
+        xsSetDb($search, getDbNumByYear(TNOW), $g);
     }
 
     if (empty($q))
