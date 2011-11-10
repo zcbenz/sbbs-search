@@ -16,7 +16,7 @@ foreach ($queryParts as $param) {
 <?php endif; ?>
 <?php endforeach; ?>
 <div class="r-range well">
-    <input type="hidden" name="t" value="5">
+    <input type="hidden" name="t" value="2">
     <div class="row">
         <div class="r-label span3">
             <label>自从</label>

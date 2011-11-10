@@ -75,10 +75,54 @@ try
     $xs = new XS(XS_CONF);
     $search = $xs->search;
     $search->setCharset('GBK');
-    if ($g)
+
+    // 设置搜索用库以及时间范围
+    if ($g) // 精华区搜索
         $search->setDb('jinghua');
-    else
+    else { // 通用搜索
+        switch ($t) {
+        case 1: // 任意时间段
+            $search->setDb('db' . getDbNumByYear(TNOW));
+            for ($i = getDbNumByYear(TORG); $i < getDbNumByYear(TNOW); $i++)
+                $search->addDb('db' . $i);
+
+            $attr['t'] = $t;
+            break;
+        case 3: // 预设时间段
+        case 4:
+        case 5:
+            define('DAY', 24 * 3600);
+            $diff = array(2 * DAY, 7 * DAY, 30 * DAY);
+
+            $valid = true;
+            $until = date('Y-m-d');
+            $since = date('Y-m-d', time() - $diff[$t - 3]);
+        case 2: // 自定义
+            if (!$valid) $valid = validate_time($since) && validate_time($until);
+
+            if ($valid) {
+                $cur = getDbNumByYear(substr($until, 0, 4));
+                $org = getDbNumByYear(substr($since, 0, 4));
+                $search->setDb('db' . $cur);
+                for ($i = $org; $i < $cur; $i++)
+                    $search->addDb('db' . $i);
+
+                $attr['since'] = $since;
+                $attr['until'] = $until;
+                $attr['t'] = $t;
+                break;
+            }
+
+            // 无效时间，作默认处理
+            $t = 0;
+        case 0: // 两年内 
+        default:
+            $since = $until = '';
+            $search->setDb('db' . getDbNumByYear(TNOW));
+        }
+
         $search->addDb('jinghua');
+    }
 
     if (empty($q))
     {
@@ -92,9 +136,6 @@ try
 
         // set query
         $search->setQuery($q);
-
-        // filter private posts
-        $search->addRange('access', 1, 1);
 
         // custom filters
         if ($f) {
@@ -112,29 +153,8 @@ try
         if ($g) {
             $attr['g'] = 1;
         }
-
-        // time ranges
-        if ($t == 5) {
-            if (validate_time($since) && validate_time($until)) {
-                $search->addRange('time', str_replace('-', '', $since), str_replace('-', '', $until));
-
-                $attr['t'] = $t;
-                $attr['since'] = $since;
-                $attr['until'] = $until;
-            } else {
-                $since = $until = '';
-                $t = 0;
-            }
-        } else {
-            $since = $until = '';
-
-            if (0 < $t && $t < 5) {
-                define('DAY', 24 * 3600);
-                $diff = array(2 * DAY, 7 * DAY, 30 * DAY, 365 * DAY);
-                $now = time();
-                $search->addRange('time', date('Ymd', $now - $diff[$t - 1]), date('Ymd'));
-                $attr['t'] = $t;
-            }
+        if ($t > 1) {
+            $search->addRange('time', str_replace('-', '', $since), str_replace('-', '', $until));
         }
 
         // sort?
