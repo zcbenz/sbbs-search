@@ -4,6 +4,9 @@ require_once 'init.php';
 Lib::load(array('search/helper.php'));
 Lib::load(array('utils/pagination.php'));
 
+$session = new Session();
+$session->initLogin();
+
 // 支持的 GET 参数列表
 // q: 查询语句
 // f: 只显示主题贴
@@ -19,7 +22,7 @@ Lib::load(array('utils/pagination.php'));
 // variables
 $attr = array();
 $eu = '';
-$__ = array('q', 'q2', 'm', 'f', 'a', 'g', 't', 'author', 'since', 'until', 's', 'p', 'ie', 'oe');
+$__ = array('q', 'q2', 'm', 'f', 'a', 'g', 't', 'author', 'board', 'since', 'until', 's', 'p', 'ie', 'oe');
 foreach ($__ as $_)
     $$_ = isset($_GET[$_]) ? $_GET[$_] : '';
 
@@ -50,7 +53,7 @@ else
 }
 
 // recheck request parameters
-$q  = get_magic_quotes_gpc() ? stripslashes($q) : $q;
+$q = get_magic_quotes_gpc() ? stripslashes($q) : $q;
 
 // attach extra parameters
 if ($q2) {
@@ -60,6 +63,10 @@ if ($q2) {
 if ($author) {
     $author = get_magic_quotes_gpc() ? stripslashes($author) : $author;
     $q .= ' author:' . $author . ' ';
+}
+if ($board) {
+    $board = get_magic_quotes_gpc() ? stripslashes($board) : $board;
+    $q .= ' board:' . $board;
 }
 $attr['q'] = $q;
 
@@ -113,6 +120,15 @@ try
     default:
         $since = $until = '';
         xsSetDb($search, getDbNumByYear(TNOW), $g);
+    }
+
+    // load private board's db
+    if (preg_match('/.* board:([[:alpha:]]+).*/', $q, $matches) == 1) {
+        $board = $matches[1];
+        if (bbs2_access_board($board) > 0) {
+            xsAddDb($search, '_private_' . $board, $g);
+            $attr['board'] = $board;
+        }
     }
 
     if (empty($q))

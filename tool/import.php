@@ -14,9 +14,8 @@ $all = 0;
 $boards = bbs_super_getboards();
 
 // Skip to specified board
-//while ($boards[0]['NAME'] != 'Test')
-//    array_shift($boards);
-//array_shift($boards);
+//while ($boards[0]['NAME'] != 'NewBoard')
+//    $old = array_shift($boards);
 
 foreach ($boards as $key => &$board) {
     $board_name   = $board['NAME'];
@@ -47,7 +46,7 @@ foreach ($boards as $key => &$board) {
                 xs_import_article($index, $board, $val);
                 ++$count;
             } catch(Exception $e) {
-                echo 'Error: ', $e->getMessage();
+                echo 'Error: ', $e->getMessage(), "\n";
             }
         }
 

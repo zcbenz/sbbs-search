@@ -17,6 +17,7 @@ for ($i = getDbNumByYear(TORG); $i <= getDbNumByYear(TNOW); $i++) {
 
 // Push empty data to the db
 $index->setDb('db');
+$index->clean();
 $data = array(
     'id'         => 0,
     'first'      => 0,
