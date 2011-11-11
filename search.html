@@ -31,7 +31,8 @@
         .res-doc p { font-size: 12px; color: #333; margin: 2px 0; }
         .res-doc ul { overflow: hidden; zoom: 1; margin: 0; padding: 0; }
         .res-doc li { width: 130px; list-style: none; padding: 0; margin: 0 20px 0 0; float: left; font-size: 12px; color: green; }
-        .res-doc li span { border-bottom: 1px dotted #aaa; font-family: arial; color: #666; }
+        .res-doc li a, .res-doc li span { text-decoration: none; border-bottom: 1px dotted #aaa; font-family: arial; color: #666; }
+        .res-doc li a:hover { text-decoration: none; color: #222; }
         .footer { border-top:1px solid #eee; font-size: 12px; margin-top: 20px; margin-bottom: 20px; padding-top: 10px; color: #666; }
         .footer a { color: #666; text-decoration: underline; }
         .ac_results { padding: 0px; border: 1px solid rgb(129, 127, 130); background-color: white; overflow: hidden; z-index: 99999; }
@@ -152,7 +153,7 @@
                         <p><?php echo $search->highlight($doc->content); ?></p>
                         <ul>
                             <li>日期 <span><?php echo format_time($doc->time); ?></span></li>
-                            <li>版面 <span><?php echo $doc->board; ?></span></li>
+                            <li>版面 <span><a href="/bbsdoc.php?board=<?php echo $doc->board; ?>"><?php echo $doc->board; ?></a></span></li>
                             <li>作者 <span><?php echo $doc->author; ?></span></li>
                         </ul>
                     </div>

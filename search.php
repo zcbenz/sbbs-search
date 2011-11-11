@@ -22,9 +22,12 @@ $session->initLogin();
 // variables
 $attr = array();
 $eu = '';
-$__ = array('q', 'q2', 'm', 'f', 'a', 'g', 't', 'author', 'board', 'since', 'until', 's', 'p', 'ie', 'oe');
+$__ = array('q', 'q2', 'm', 'f', 'a', 'g', 't', 'author', 'since', 'until', 's', 'p', 'ie', 'oe');
 foreach ($__ as $_)
     $$_ = isset($_GET[$_]) ? $_GET[$_] : '';
+
+// should we set time range
+$limit = false;
 
 // base url
 $bu = '/s?';
@@ -64,10 +67,6 @@ if ($author) {
     $author = get_magic_quotes_gpc() ? stripslashes($author) : $author;
     $q .= ' author:' . $author . ' ';
 }
-if ($board) {
-    $board = get_magic_quotes_gpc() ? stripslashes($board) : $board;
-    $q .= ' board:' . $board;
-}
 $attr['q'] = $q;
 
 // other variable maybe used in tpl
@@ -101,6 +100,8 @@ try
         $until = date('Y-m-d');
         $since = date('Y-m-d', time() - $diff[$t - 3]);
     case 2: // 自定义
+        if ($limit == 6) $limit = false;
+        else $limit = true;
         if (!$valid) $valid = validate_time($since) && validate_time($until);
 
         if ($valid) {
@@ -118,16 +119,19 @@ try
         $t = 0;
     case 0: // 两年内 
     default:
-        $since = $until = '';
+        $limit = false;
+        $until = date('Y-m-d');
+        $since = date('Y-m-d', time() - 24 * 3600 * 365 * 2);
+
         xsSetDb($search, getDbNumByYear(TNOW), $g);
     }
 
     // load private board's db
-    if (preg_match('/.* board:([[:alpha:]]+).*/', $q, $matches) == 1) {
+    if (preg_match('/.* *board:([[:alpha:]]+).*/', $q, $matches) == 1) {
         $board = $matches[1];
         if (bbs2_access_board($board) > 0) {
+            if($t != 1) $limit = true;
             xsAddDb($search, '_private_' . $board, $g);
-            $attr['board'] = $board;
         }
     }
 
@@ -160,7 +164,7 @@ try
         if ($g) {
             $attr['g'] = 1;
         }
-        if ($t > 1) {
+        if ($limit) {
             $search->addRange('time', str_replace('-', '', $since), str_replace('-', '', $until));
         }
 
