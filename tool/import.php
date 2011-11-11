@@ -11,9 +11,6 @@ $session->initLogin();
 
 $all = 0;
 
-$xs = new XS(XS_CONF);
-$index = $xs->index;
-
 $boards = bbs_super_getboards();
 
 // Skip to specified board
@@ -24,6 +21,9 @@ $boards = bbs_super_getboards();
 foreach ($boards as $key => &$board) {
     $board_name   = $board['NAME'];
     $board_id     = $board['BID'];
+
+    $xs = new XS(XS_CONF);
+    $index = $xs->index;
 
     $count = 0;
     $total = bbs_countarticles($board_id, 0, 0);
@@ -47,6 +47,7 @@ foreach ($boards as $key => &$board) {
                 xs_import_article($index, $board, $val);
                 ++$count;
             } catch(Exception $e) {
+                echo 'Error: ', $e->getMessage();
             }
         }
 
