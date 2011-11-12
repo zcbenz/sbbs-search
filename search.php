@@ -129,7 +129,7 @@ try
     // load private board's db
     if (preg_match('/.* *board:([[:alpha:]]+).*/', $q, $matches) == 1) {
         $board = $matches[1];
-        if (bbs2_access_board($board) > 0) {
+        if (!bbs2_access_board('guest', $board) && bbs2_access_board($board) > 0) {
             if($t != 1) $limit = true;
             xsAddDb($search, '_private_' . $board, $g);
         }
