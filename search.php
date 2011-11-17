@@ -4,6 +4,16 @@ require_once 'init.php';
 Lib::load(array('search/helper.php'));
 Lib::load(array('utils/pagination.php'));
 
+$loginOk = false;
+
+try {
+    $session = new Session();
+    $session->initLogin();
+
+    if ($session->userId != 'guest') $loginOk = true;
+} catch (Exception $e) {
+}
+
 // 支持的 GET 参数列表
 // q: 查询语句
 // f: 只显示主题贴
@@ -79,6 +89,9 @@ try
     $search = $xs->search;
     $search->setCharset('GBK');
 
+    if ($t > 0 && $t < 3 && !$loginOk)
+        throw new Exception('未登陆时只能搜索两年内的帖子');
+
     // 设置搜索用库以及时间范围
     switch ($t) {
     case 1: // 任意时间段
@@ -130,18 +143,9 @@ try
     // load private board's db
     if (preg_match('/.* *board:([[:alpha:]]+).*/', $q, $matches) == 1) {
         $board = $matches[1];
-        if (!bbs2_access_board('guest', $board)) {
-            // Only login when we need to access boards
-            try {
-                $session = new Session();
-                $session->initLogin();
-            } catch (Exception $e) {
-            }
-
-            if (bbs2_access_board($board) > 0) {
-                if($t != 1) $limit = true;
-                xsAddDb($search, '_private_' . $board, $g);
-            }
+        if (bbs2_access_board($board) > 0) {
+            if($t != 1) $limit = true;
+            xsAddDb($search, '_private_' . $board, $g);
         }
     }
 
@@ -210,7 +214,7 @@ try
         $related = $search->getRelatedQuery();
     }
 }
-catch (XSException $e)
+catch (Exception $e)
 {
     $error = $e->getMessage();
 }

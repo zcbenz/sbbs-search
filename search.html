@@ -33,6 +33,7 @@
         .res-doc li { width: 130px; list-style: none; padding: 0; margin: 0 20px 0 0; float: left; font-size: 12px; color: green; }
         .res-doc li a, .res-doc li span { text-decoration: none; border-bottom: 1px dotted #aaa; font-family: arial; color: #666; }
         .res-doc li a:hover { text-decoration: none; color: #222; }
+        .res-error { margin-top: 10px; }
         .footer { border-top:1px solid #eee; font-size: 12px; margin-top: 20px; margin-bottom: 20px; padding-top: 10px; color: #666; }
         .footer a { color: #666; text-decoration: underline; }
         .ac_results { padding: 0px; border: 1px solid rgb(129, 127, 130); background-color: white; overflow: hidden; z-index: 99999; }
@@ -99,7 +100,7 @@
     <div class="row">
         <div class="span12">
             <?php if (!empty($error)): ?>
-            <div id="res-error"><strong>错误：</strong><?php echo $error; ?></div>
+            <div class="res-error"><strong>错误：</strong><?php echo $error; ?></div>
             <?php endif; ?>
 
             <!-- fixed query -->
@@ -206,8 +207,10 @@
                     <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一周内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 5); ?> >一月内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >两年内</a></li>
+                    <?php if ($loginOk): ?>
                     <li><a <?php echo value_attr($bu, $attr, 't', 1); ?> >任意时间段</a></li>
                     <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 2, true); ?> href="#"><?php echo ($t == 2 ?'从 ' . $since . ' 到 ' . $until : '自定义'); ?></a></li>
+                    <?php endif; ?>
                 </ul>
                 <form id="r-form" action="/s" method="get">
                     <input type="hidden" name="q" value="<?php echo $q; ?>">
