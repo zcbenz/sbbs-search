@@ -202,12 +202,11 @@
             </div>
             <div class="row">
                 <ul class="filter">
-                    <li><a <?php echo value_attr($bu, $attr, 't', 1); ?> >任意时间段</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 3); ?> >两天内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一周内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 5); ?> >一月内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >两年内</a></li>
-                    <li><a <?php echo value_attr($bu, $attr, 't', 6); ?> >十年内</a></li>
+                    <li><a <?php echo value_attr($bu, $attr, 't', 1); ?> >任意时间段</a></li>
                     <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 2, true); ?> href="#"><?php echo ($t == 2 ?'从 ' . $since . ' 到 ' . $until : '自定义'); ?></a></li>
                 </ul>
                 <form id="r-form" action="/s" method="get">

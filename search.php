@@ -121,6 +121,10 @@ try
         $since = date('Y-m-d', time() - 24 * 3600 * 365 * 2);
 
         xsSetDb($search, getDbNumByYear(TNOW), $g);
+
+        // less than 1.8 years
+        if (TNOW > TORG && ((TNOW - TORG) % 2 < 1.8))
+            xsAddDb($search, getDbNumByYear(TNOW - 1), $g);
     }
 
     // load private board's db
