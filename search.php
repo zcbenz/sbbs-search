@@ -145,7 +145,8 @@ try
 
     // disable search by author for normal users
     if (preg_match('/.* *author:[[:alnum:]]+.*/', $q) > 0 &&
-        !$matchBoard)
+        !$matchBoard &&
+        !bbs2_access_board('discuss'))
     {
         $q = preg_replace('/author:[[:alnum:]]+/', '', $q);
         $attr['q'] = $q;

@@ -1,18 +1,14 @@
 #!/usr/bin/env php
 <?php
-require_once 'init.php';
+require_once 'search/lib/helper.php';
 
-Lib::load(array('search/helper.php'));
+bbs_setuser_nologin('SYSOP');
 
 define('BBSLOG_USER', 2);
 define('BBSLOG_POST', 7);
 define('BBSLOG_BM', 8);
 define('BBSLOG_DELETE', 9);
 define('BBSLOG_UPDATE', 10);
-
-$session = new Session();
-$session->initLogin();
-bbs_setuser_nologin('SYSOP');
 
 if (bbs_daemon('bbsindexd', true, true)) {
     bbs_error('3error', 'bbsindexd already started');

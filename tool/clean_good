@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+require_once 'www2-funcs.php';
+require_once 'search/lib/helper.php';
+
+bbs_setuser_nologin('SYSOP');
+
+$xs = new XS(XS_CONF);
+$index = $xs->index;
+
+for ($i = getDbNumByYear(TORG); $i <= getDbNumByYear(TNOW); $i++) {
+    try {
+        $index->setDb('jinghua' . $i);
+        $index->clean();
+    } catch (Exception $e) {
+        echo $i, ' : ', $e->getMessage(), "\n";
+    }
+}
+
+$boards = bbs_super_getboards();
+foreach ($boards as $key => &$board) {
+    try {
+        $index->setDb('jinghua_private_' . strtolower($board['NAME']));
+        $index->clean();
+    } catch (Exception $e) {
+        echo $board['NAME'], ' : ', $e->getMessage(), "\n";
+    }
+}
+?>

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * Xunsearch PHP-SDK 运行条件检测
@@ -9,8 +10,8 @@
  * @version $Id$
  */
 
-require_once dirname(__FILE__) . '/../lib/XS.php';
-require dirname(__FILE__) . '/XSUtil.class.php';
+require_once 'search/lib/XS.php';
+require_once 'search/lib/XSUtil.class.php';
 
 // magick output charset
 XSUtil::parseOpt(array('c', 'charset'));

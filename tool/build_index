@@ -1,14 +1,11 @@
 #!/usr/bin/env php
 <?php
-require_once 'init.php';
+require_once 'www2-funcs.php';
+require_once 'search/lib/helper.php';
 
-Lib::load(array('search/helper.php'));
+bbs_setuser_nologin('SYSOP');
 
 $start_time = time();
-
-$session = new Session();
-$session->initLogin();
-bbs_setuser_nologin('SYSOP');
 
 $all = 0;
 

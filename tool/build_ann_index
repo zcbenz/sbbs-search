@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
-require_once 'init.php';
+require_once 'www2-funcs.php';
+require_once 'search/lib/helper.php';
 
-Lib::load(array('search/helper.php'));
+bbs_setuser_nologin('SYSOP');
 
 // 重建精华区搜索索引
 
@@ -10,10 +11,6 @@ global $count;
 global $index;
 global $xs;
 global $dirs;
-
-$session = new Session();
-$session->initLogin();
-bbs_setuser_nologin('SYSOP');
 
 $count = 0;
 $start_time = time();
