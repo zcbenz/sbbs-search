@@ -8,8 +8,8 @@ foreach ($queryParts as $param) {
     $attr[$item[0]] = urldecode($item[1]);
 }
 ?>
-<link rel="stylesheet" href="/apps/search/datepicker/calendar.css" type="text/css" media="screen">
-<script type="text/javascript" src="/apps/search/datepicker/calendar.js"></script>
+<link rel="stylesheet" href="/search/datepicker/calendar.css" type="text/css" media="screen">
+<script type="text/javascript" src="/search/datepicker/calendar.js"></script>
 <?php foreach($attr as $k => $v): ?>
 <?php if (!in_array($k, array('q', 't', 'since', 'until'))): ?>
 <input type="hidden" name="<?php echo $k; ?>" value="<?php echo $v; ?>">

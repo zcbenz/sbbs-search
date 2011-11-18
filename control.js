@@ -4,7 +4,7 @@ $(function(){
         var popover = $(this);
         if (first) {
             first = false;
-            $.get('/apps/search/tips.html', function(data) {
+            $.get('/search/tips.html', function(data) {
                 popover.attr('data-content', data);
                 popover.popover({
                     trigger:'manual',
@@ -24,7 +24,7 @@ $(function(){
     $('#custom-time').click(function() {
         if (!range_load) {
             range_load = !range_load;
-            $.get('/apps/search/range.php', function(data) {
+            $.get('/search/range.php', function(data) {
                 $('#range').html(data);
             });
         } else {

@@ -51,7 +51,7 @@
 </head>
 <body>
 <div class="container">
-    <a href="/s"><img src="/apps/search/logo_s.png" alt="虎踞龙蟠搜索" /></a>
+    <a href="/s"><img src="/search/logo_s.png" alt="虎踞龙蟠搜索" /></a>
 
     <div class="row">
         <form action="/s" id="q-form" method="get">
@@ -65,7 +65,7 @@
         </div>
         <div class="span3">
             <input id="q-btn" class="btn success" type="submit" value="  搜索!  " />
-            <a id="q-advance" title="高级搜索" data-content="载入中..." href="/apps/search/tips.html">高级搜索</a>
+            <a id="q-advance" title="高级搜索" data-content="载入中..." href="/search/tips.html">高级搜索</a>
         </div>
         </form>
     </div>
@@ -207,7 +207,7 @@
                     <li><a <?php echo value_attr($bu, $attr, 't', 4); ?> >一周内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 5); ?> >一月内</a></li>
                     <li><a <?php echo value_attr($bu, $attr, 't', 0); ?> >两年内</a></li>
-                    <?php if ($loginOk): ?>
+                    <?php if ($loginok): ?>
                     <li><a <?php echo value_attr($bu, $attr, 't', 1); ?> >任意时间段</a></li>
                     <li><a id="custom-time" <?php echo value_attr($bu, $attr, 't', 2, true); ?> href="#"><?php echo ($t == 2 ?'从 ' . $since . ' 到 ' . $until : '自定义'); ?></a></li>
                     <?php endif; ?>
@@ -242,7 +242,7 @@
 </div>
 
 <script type="text/javascript" src="/static/search.js"></script>
-<script type="text/javascript" src="/apps/search/control.js"></script>
+<script type="text/javascript" src="/search/control.js"></script>
 
 <!-- ready script -->
 <script language="javascript">
@@ -256,7 +256,7 @@ $(function(){
 		if ($(this).val() == '' || $(this).val() == $(this).attr('title')) {
 			$(this).addClass('tips').val($(this).attr('title'));
 		}
-	}).blur().autocomplete('/apps/search/suggest.php', {
+	}).blur().autocomplete('/search/suggest.php', {
         width: 458,
         selectFirst: false,
         scroll: false

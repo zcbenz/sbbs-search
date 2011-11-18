@@ -1,18 +1,9 @@
 <?php
-require_once 'init.php';
+require_once dirname(__FILE__) . '/../www2-funcs.php';
+require_once dirname(__FILE__) . '/lib/helper.php';
+require_once dirname(__FILE__) . '/lib/pagination.php';
 
-Lib::load(array('search/helper.php'));
-Lib::load(array('utils/pagination.php'));
-
-$loginOk = false;
-
-try {
-    $session = new Session();
-    $session->initLogin();
-
-    if ($session->userId != 'guest') $loginOk = true;
-} catch (Exception $e) {
-}
+login_init();
 
 // 支持的 GET 参数列表
 // q: 查询语句
@@ -89,7 +80,7 @@ try
     $search = $xs->search;
     $search->setCharset('GBK');
 
-    if ($t > 0 && $t < 3 && !$loginOk)
+    if ($t > 0 && $t < 3 && !$loginok)
         throw new Exception('未登陆时只能搜索两年内的帖子');
 
     // 设置搜索用库以及时间范围
@@ -141,12 +132,23 @@ try
     }
 
     // load private board's db
-    if (preg_match('/.* *board:([[:alpha:]]+).*/', $q, $matches) == 1) {
+    $matchBoard = false;
+    if (preg_match('/.* *board:([[:alnum:]]+).*/', $q, $matches) == 1) {
         $board = $matches[1];
         if (bbs2_access_board($board) > 0) {
+            $matchBoard = true;
+
             if($t != 1) $limit = true;
             xsAddDb($search, '_private_' . $board, $g);
         }
+    }
+
+    // disable search by author for normal users
+    if (preg_match('/.* *author:[[:alnum:]]+.*/', $q) > 0 &&
+        !$matchBoard)
+    {
+        $q = preg_replace('/author:[[:alnum:]]+/', '', $q);
+        $attr['q'] = $q;
     }
 
     if (empty($q))
