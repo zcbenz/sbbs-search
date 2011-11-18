@@ -1,0 +1,196 @@
+#!/usr/bin/env php
+<?php
+require_once 'init.php';
+
+Lib::load(array('search/helper.php'));
+
+// 重建精华区搜索索引
+
+global $count;
+global $index;
+global $xs;
+global $dirs;
+
+$session = new Session();
+$session->initLogin();
+bbs_setuser_nologin('SYSOP');
+
+$count = 0;
+$start_time = time();
+define('BBS_HOME_LEN', strlen(BBS_HOME));
+define('BBS_ANN_LEN', strlen(BBS_HOME . '/0Announce/'));
+
+$xs = new XS(XS_CONF);
+$index = $xs->index;
+
+// 平滑重建精华索引
+for ($i = getDbNumByYear(TORG); $i <= getDbNumByYear(TNOW); $i++) {
+    $index->setDb('jinghua' . $i);
+    $index->clean();
+}
+$index->clean();
+
+// 对全部目录进行遍历
+$skip = true;
+$iter = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator (BBS_HOME . '/0Announce/groups'),
+    RecursiveIteratorIterator::SELF_FIRST);
+foreach ($iter as $one) {
+    if ($one->isDir()) {
+        // 读取里面的文章
+        $path = $one->getPathname();
+        $dirs = explode('/', substr($path, BBS_ANN_LEN));
+        if (count($dirs) < 2) continue;
+        $board_name = $dirs[2];
+        if (!$board_name) continue;
+
+        $articles = read_ann_dir($path);
+        if (!$articles) continue;
+
+        // 依次导入
+        foreach ($articles as $article)
+            import_article($article, $board_name);
+        echo memory_get_usage(), "\n\n";
+    }
+}
+
+echo 'Done: ', $count, "\n";
+echo 'Time: ', time() - $start_time, "\n";
+
+// 递归索引
+function import_article($article, $board_name) {
+    global $count;
+    global $xs;
+    global $index;
+
+    if (endsWith($article['PATH'], '.index', false))
+        return;
+
+    try {
+        if (!file_exists($article['PATH'])) return;
+
+        if (filesize($article['PATH']) < 1) return;
+
+        $access = bbs2_access_board('guest', $board_name);
+        if ($access < 0) return;
+
+        echo $count, ' ', substr($article['PATH'], BBS_ANN_LEN), "\n";
+
+        $content = file_get_contents($article['PATH'], false, null, -1, 200000);
+        add_extra_info($article, $content);
+
+        $data = array(
+            'id'         => 10000000000 + $count,
+            'first'      => startsWith($article['TITLE'], 'Re:', false),
+            'attachment' => $article['ATTACH'],
+            'mark'       => 0,
+            'replies'    => 0,
+            'good'       => 1,
+            'title'      => $article['TITLE'],
+            'content'    => filter($content),
+            'time'       => $article['TIME'],
+            'author'     => $article['OWNER'],
+            'path'       => substr($article['PATH'], BBS_ANN_LEN),
+            'board'      => $board_name
+        );
+
+        $doc = new XSDocument;
+        $doc->setFields($data);
+
+        if ($access) $index->setDb('jinghua' . getDbNumByTime($article['TIME']));
+        else $index->setDb('jinghua_private_' . strtolower($board_name));
+        $index->add($doc);
+        ++$count;
+    } catch(Exception $e) {
+        echo 'Error: ', $e->getMessage(), "\n";
+
+        // restart index
+        $xs = new XS(XS_CONF);
+        $index = $xs->index;
+
+        return;
+    }
+}
+
+// replacement of bbs_read_ann_dir
+function read_ann_dir($path) {
+    if (strstr($path, '..') || strstr($path, 'SYSHome'))
+        return null;
+
+    try {
+        $handle = fopen($path . '/.Names', 'r');
+
+        $ret = array();
+        $one = array();
+        while (($str = fgets($handle))) {
+            if ($str[0] == '#') continue;
+
+            $i = strpos($str, '=');
+            if ($i === false) continue;
+
+            $key = substr($str, 0, $i);
+            $value = rtrim(substr($str, $i + 1));
+
+            switch ($key) {
+            case 'Name': 
+                $j = strrpos($value, ' ');
+                if ($j === false) $j = strlen($value);
+
+                $one['TITLE'] = substr($value, 0, $j);
+                $one['BM'] = substr($value, $j + 1);
+                break;
+            case 'Attach':
+                $one['ATTACH'] = intval($value);
+                break;
+            case 'Path':
+                $one['PATH'] = str_replace('~', $path, $value);
+                break;
+            case 'Numb':
+                if (is_dir($one['PATH'])) break;
+
+                $ret[] = $one;
+                $one = array();
+                break;
+            }
+        }
+
+        fclose($handle);
+    } catch(Exception $e) {
+        echo $e->getMessage(), "\n";
+        return null;
+    }
+
+    return $ret;
+}
+
+// grep post info from content
+function add_extra_info(&$article, &$content) {
+    $i = strpos($content, "\n");
+    $l1 = substr($content, 0, $i);
+
+    $i = strpos($content, "\n", $i + 1);
+    $j = strpos($content, "\n", $i + 1);
+    $l3 = substr($content, $i + 1, $j - $i);
+
+    // sender
+    $matches = array();
+    preg_match('/发信人: (.*) \(.*\).*/', $l1, $matches);
+    $article['OWNER'] = $matches[1];
+
+    // chinese time
+    $matches = array();
+    if (preg_match('/.*\((.*)年(.*)月(.*)日(.*):(.*):(.*).*\).*/', $l3, $matches) > 0) {
+        $article['TIME'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
+        return;
+    }
+
+    // english time
+    $matches = array();
+    if (preg_match('/.*\((.*)\).*/', $l3, $matches) > 0)
+        $time = strtotime($matches[1]);
+    if ($time > 0)
+       $article['TIME'] = $time;
+    else
+       $article['TIME'] = filemtime($article['PATH']);
+}
+?>

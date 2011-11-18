@@ -1,0 +1,61 @@
+#!/usr/bin/env php
+<?php
+require_once 'init.php';
+
+Lib::load(array('search/helper.php'));
+
+define('BBSLOG_USER', 2);
+define('BBSLOG_POST', 7);
+define('BBSLOG_BM', 8);
+define('BBSLOG_DELETE', 9);
+define('BBSLOG_UPDATE', 10);
+
+$session = new Session();
+$session->initLogin();
+bbs_setuser_nologin('SYSOP');
+
+if (bbs_daemon('bbsindexd', true, true)) {
+    bbs_error('3error', 'bbsindexd already started');
+
+    exit(0);
+}
+
+while ($msg = bbs_logrcv()) {
+    if ($msg['mtype'] == BBSLOG_POST) {
+        import_post($msg['board'], $msg['postid']);
+    } else if ($msg['mtype'] == BBSLOG_DELETE) {
+        try {
+            $xs = new XS(XS_CONF);
+            $index = $xs->index;
+            xsDelArticle($index, $msg['mtext'], $msg['pid']);
+            bbs_log('bbsindexd: Delete index: ' . $msg['pid']);
+        } catch(Exception $e) {
+            bbs_error('3error', 'bbsindexd remove index failed: ' . $e->getMessage());
+        }
+    } else if ($msg['mtype'] == BBSLOG_UPDATE) {
+        import_post($msg['mtext'], $msg['pid']);
+    }
+}
+
+function import_post($board_name, $id) {
+    $board = array();
+    bbs_getboard($board_name, &$board);
+
+    try {
+        $xs = new XS(XS_CONF);
+        $index = $xs->index;
+        xs_import_article($index, $board, get_article($board_name, $id), true);
+        bbs_log('bbsindexd: update index: ' . $board_name . ' ' . $id);
+    } catch(Exception $e) {
+        bbs_error('3error', 'bbsindexd update index failed: ' . $e->getMessage());
+    }
+}
+
+function get_article($board_name, $id) {
+    $articles = array();
+    bbs_get_records_from_id($board_name, $id, 0, &$articles);
+
+    return $articles[1];
+}
+
+?>
