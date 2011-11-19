@@ -462,7 +462,6 @@ class XS extends XSComponent
 		}
 	}
 }
-spl_autoload_register('XS::autoload', true, true);
 function xs_error_handler($errno, $error, $file, $line)
 {
 	if ($errno & ini_get('error_reporting'))
