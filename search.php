@@ -133,7 +133,7 @@ try
 
     // load private board's db
     $matchBoard = false;
-    if (preg_match('/.* *board:([[:alnum:]]+).*/', $q, $matches) == 1) {
+    if (preg_match('/.* *board:([[:alnum:]_]+).*/', $q, $matches) == 1) {
         $board = $matches[1];
         if (bbs2_access_board($board) > 0) {
             $matchBoard = true;
