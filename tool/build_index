@@ -1,20 +1,35 @@
 #!/usr/bin/env php
 <?php
+// build_index time_bound, split_in_to, my_work
+// eg: split works into 4 parts and do the NO.2
+//     build_index 1321758152, 4, 1
+
 require_once 'www2-funcs.php';
 require_once 'search/lib/helper.php';
 
 bbs_setuser_nologin('SYSOP');
 
-$start_time = time();
+if ($argc != 4) {
+    $time_bound  = time();
+    $split_in_to = 1;
+    $my_work     = 0;
+} else {
+    $time_bound  = $argv[1];
+    $split_in_to = $argv[2];
+    $my_work     = $argv[3];
+}
 
+$start_time = time();
 $all = 0;
 
 $boards = bbs_super_getboards();
 
-// Skip to specified board
-while ($boards[0]['NAME'] != 'M_Academic')
-    $old = array_shift($boards);
-array_shift($boards);
+// skip to my works
+$pieces = count($boards) / $split_in_to;
+if ($my_work != $split_in_to - 1) // normal works
+    $boards = array_slice($boards, $pieces * $my_work, $pieces);
+else // last work
+    $boards = array_slice($boards, $pieces * $my_work);
 
 foreach ($boards as $key => &$board) {
     $board_name   = $board['NAME'];
@@ -41,6 +56,8 @@ foreach ($boards as $key => &$board) {
         $articles = bbs_getarticles($board_name, $i, $PAGE, 0, 0);
 
         foreach ($articles as $key => &$val) {
+            if ($val['POSTTIME'] > $time_bound) continue;
+
             try {
                 xs_import_article($index, $board, $val);
                 ++$count;
