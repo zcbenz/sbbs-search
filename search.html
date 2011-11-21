@@ -151,7 +151,11 @@
                             <span class="label success">标记</span>
                             <?php endif; ?>
                         </h2>
-                        <p><?php echo $search->highlight(htmlentities($doc->content, ENT_COMPAT, GB2312)); ?></p>
+                        <?php try { ?>
+                        <p><?php echo $search->highlight(htmlentities($doc->content, ENT_COMPAT, 'GB2312')); ?></p>
+                        <?php } catch (Exception $e) { ?>
+                        <p><?php echo '索引中有无效文章内容，请报告技术站务'; ?></p>
+                        <?php } ?>
                         <ul>
                             <li>日期 <span><?php echo format_time($doc->time); ?></span></li>
                             <li>版面 <span><a href="/bbsdoc.php?board=<?php echo $doc->board; ?>"><?php echo $doc->board; ?></a></span></li>
