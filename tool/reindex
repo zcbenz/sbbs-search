@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+require_once 'www2-funcs.php';
+require_once 'search/lib/helper.php';
+
+bbs_setuser_nologin('SYSOP');
+
+import_post($argv[1], $argv[2]);
+
+function import_post($board_name, $id) {
+    $board = array();
+    bbs_getboard($board_name, &$board);
+
+    $xs = new XS(XS_CONF);
+    $index = $xs->index;
+    xs_import_article($index, $board, get_article($board_name, $id), true);
+}
+
+function get_article($board_name, $id) {
+    $articles = array();
+    bbs_get_records_from_id($board_name, $id, 0, &$articles);
+
+    return $articles[1];
+}
+
+?>
