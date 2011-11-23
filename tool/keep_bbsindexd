@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+while true;
+do
+    sleep 1;
+
+    if ps -p `cat ~/var/bbsindexd.pid` > /dev/null 2>&1; then
+        :
+    else
+        date;
+        /home/bbs/bin/bbsindexd;
+    fi
+done
