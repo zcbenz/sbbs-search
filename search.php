@@ -264,5 +264,8 @@ function validate_time($input) {
 }
 
 // output the data
-include dirname(__FILE__) . '/search.html';
+//if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.') == false)
+//    include dirname(__FILE__) . '/search.html';
+//else
+    include dirname(__FILE__) . '/ie6.html';
 ?>

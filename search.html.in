@@ -2,8 +2,10 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=gbk">
+    <meta name="googlebot" content="index,noarchive,nofollow,noodp" />
+    <meta name="robots" content="index,nofollow,noarchive,noodp" />
     <link rel="stylesheet" href="/search/css/bootstrap.css" type="text/css" media="screen">
-    <title>虎踞龙蟠搜索<?php if ($q) echo ' | ' . $q; ?></title>
+    <title>虎踞龙蟠搜索<?php if ($q) echo ' | ' . strip_tags($q); ?></title>
 
     <style type="text/css">
         .container { margin-top: 8px; }
@@ -70,8 +72,8 @@
         </form>
     </div>
 
-	<!-- hot search -->
-	<?php if (count($hot) > 0): ?>
+   <!-- hot search -->
+   <?php if (count($hot) > 0): ?>
     <div id="q-hot" class="row">
         <div style="width:90px" class="span2">
             热门关键词：
@@ -79,24 +81,24 @@
         <div class="span8">
             <?php foreach($hot as $word => $freq): ?>
             <a href="<?php echo '/s?q=' . urlencode($word); ?>"><?php echo $word; ?></a><small>(<?php echo $freq; ?>)</small>
-            <?php endforeach; ?>		
+            <?php endforeach; ?>      
         </div>
-	</div>
-	<?php endif; ?>
+   </div>
+   <?php endif; ?>
 
-	<!-- begin search result -->
-	<?php if (!empty($q)): ?>
-	
-	<!-- neck bar -->
+   <!-- begin search result -->
+   <?php if (!empty($q)): ?>
+   
+   <!-- neck bar -->
     <div class="row">
         <div id="q-neck" class="span16">
             大约有 <strong><?php echo number_format($count); ?></strong> 项符合查询结果，
             库内数据总量为 <strong><?php echo number_format($total); ?></strong> 项。
             （搜索耗时：<?php printf('%.4f', $search_cost); ?>秒）
         </div>
-	</div>
+   </div>
 
-	<!-- error -->
+   <!-- error -->
     <div class="row">
         <div class="span12">
             <?php if (!empty($error)): ?>
@@ -234,14 +236,14 @@
         </div>
     </div>
 
-	<!-- end search result -->
-	<?php endif; ?>
+   <!-- end search result -->
+   <?php endif; ?>
 </div><!-- /container -->
 
 <div class="footer">
     <div class="container">
-		(C)opyright 2011 - 虎踞龙蟠BBS - 页面处理总时间：<?php printf('%.4f', $total_cost); ?>秒　<br />
-		Powered by <a href="http://www.xunsearch.com" target="_blank"><?php echo PACKAGE_NAME . '/' . PACKAGE_VERSION; ?></a> 
+      (C)opyright 2011 - 虎踞龙蟠BBS - 页面处理总时间：<?php printf('%.4f', $total_cost); ?>秒　<br />
+      Powered by <a href="http://www.xunsearch.com" target="_blank"><?php echo PACKAGE_NAME . '/' . PACKAGE_VERSION; ?></a> 
     </div>
 </div>
 
@@ -251,16 +253,16 @@
 <!-- ready script -->
 <script language="javascript">
 $(function(){
-	// input tips
-	$('#q').focus(function(){
-		if ($(this).val() == $(this).attr('title')) {
-			$(this).val('').removeClass('tips');
-		}
-	}).blur(function(){
-		if ($(this).val() == '' || $(this).val() == $(this).attr('title')) {
-			$(this).addClass('tips').val($(this).attr('title'));
-		}
-	}).blur().autocomplete('/search/suggest.php', {
+   // input tips
+   $('#q').focus(function(){
+      if ($(this).val() == $(this).attr('title')) {
+         $(this).val('').removeClass('tips');
+      }
+   }).blur(function(){
+      if ($(this).val() == '' || $(this).val() == $(this).attr('title')) {
+         $(this).addClass('tips').val($(this).attr('title'));
+      }
+   }).blur().autocomplete('/search/suggest.php', {
         width: 458,
         selectFirst: false,
         scroll: false
@@ -269,15 +271,15 @@ $(function(){
         $('#q-form').submit();
     });
     // submit check
-	$('#q-form').submit(function(){
-		var $input = $('#q');
-		if ($input.val() == $input.attr('title')) {
-			alert('请先输入关键词');
-			$input.focus();
-			return false;
-		}
-	});
-});	
+   $('#q-form').submit(function(){
+      var $input = $('#q');
+      if ($input.val() == $input.attr('title')) {
+         alert('请先输入关键词');
+         $input.focus();
+         return false;
+      }
+   });
+});   
 </script>
 </body>
 </html>
