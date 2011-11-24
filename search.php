@@ -139,7 +139,7 @@ try
             $matchBoard = true;
 
             if($t != 1) $limit = true;
-            xsAddDb($search, '_private_' . $board, $g);
+            xsAddDb($search, '_private_' . strtolower($board), $g);
         }
     }
 
