@@ -2,8 +2,6 @@
 <?php
 require_once 'www2-funcs.php';
 require_once 'search/lib/helper.php';
-if (!class_exists('RecursiveIteratorIterator'))
-    require_once 'search/lib/RecursiveIteratorIterator.php';
 
 bbs_setuser_nologin('SYSOP');
 
